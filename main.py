@@ -1,6 +1,5 @@
 import requests
-
-
+import argparse
 class Automaton:
     def __init__(self, transitions, accept_states): # Constructor de la clase Automaton
         self.states = {i: {} for i in range(max(max(t[:2]) for t in transitions) + 1)} # Se crea un diccionario con los estados
@@ -98,11 +97,11 @@ email_transitions = [
     (0, 1, 'char'), # Esto es para lo del antes del arroba
     (0, 1, 'number'),
     (1, 1, 'char'),
-    (1, 1, 'number'),            
-    (1, 2, '.'),                
+    (1, 1, 'number'),
+    (1, 2, '.'),
     (2, 1, 'char'),
-    (2, 1, 'number'),              
-    (1, 3, '@'),                
+    (2, 1, 'number'),
+    (1, 3, '@'),
     
     (3, 3, 'char'), #Esto de aqui ya son los que salen despues del arroba            
     (3, 4, '.'),                
@@ -117,13 +116,15 @@ phone_automaton = Automaton(phone_transitions, phone_accept_states)
 email_automaton = Automaton(email_transitions, email_accept_states)
 
 # Obtener datos de la web o archivo
-source = input() # Ingresar la direccion del txt con las direcciones.
-option = input() # Ingresar si se desean obtener teléfonos o correos.
 
+parser = argparse.ArgumentParser()
+parser.add_argument('file_path')
+parser.add_argument('-correo', action='store_true')
+parser.add_argument('-telefono', action='store_true')
+args = parser.parse_args()
 
-input_text = get_text_from_file(source)
-
-if option == "tel": # Si se desea obtener telefonos
+input_text = get_text_from_file(args.file_path)
+if args.telefono: # Si se desea obtener telefonos
     f = open("numbers.txt", "w")
     for val in input_text.split('\n'): # Se lee cada url del archivo
         print(val)
@@ -138,7 +139,7 @@ if option == "tel": # Si se desea obtener telefonos
     f.close()
 
 
-if option == "email": # Si se desea obtener correos
+if  args.correo: # Si se desea obtener correos
     f = open("emails.txt", "w")
     for val in input_text.split('\n'): # Se lee cada url del archivo
         print(val)
